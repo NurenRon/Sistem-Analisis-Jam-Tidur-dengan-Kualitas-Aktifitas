@@ -1,18 +1,9 @@
 import os
 
-os.environ['MPLCONFIGDIR'] = '/tmp'
-
 from flask import Flask, render_template, request
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
-
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
-import io
-import base64
 
 app = Flask(__name__)
 @app.route('/')
@@ -142,16 +133,6 @@ def fuzzy_route():
         else: status = "Waspada Kurang Tidur"
 
         hasil_fuzzy = {"angka": hasil_angka, "status": status}
-
-        plt.switch_backend('Agg')
-        fig, ax = plt.subplots(figsize=(6, 4))
-        jam_tidur.view(sim=simulasi, ax=ax)
-        
-        img = io.BytesIO()
-        fig.savefig(img, format='png', bbox_inches='tight')
-        img.seek(0)
-        grafik_base64 = base64.b64encode(img.getvalue()).decode()
-        plt.close(fig)
 
     return render_template('fuzzy.html', hasil=hasil_fuzzy, grafik=grafik_base64)
 
