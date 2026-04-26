@@ -1,11 +1,15 @@
-import os
-
 from flask import Flask, render_template, request
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+import base64
 
 app = Flask(__name__)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -62,7 +66,7 @@ def pakar():
             for tanya, jawab_ideal in k["syarat"].items():
                 if ans[tanya] == jawab_ideal:
                     skor += 1
-            
+
             if skor > skor_tertinggi:
                 skor_tertinggi = skor
                 hasil_terpilih = k
@@ -91,7 +95,7 @@ def fuzzy_route():
         v_fisik = int(request.form['fisik'])
         v_mental = int(request.form['mental'])
         v_pengganggu = int(request.form['pengganggu'])
-        
+
         fisik = ctrl.Antecedent(np.arange(0, 101, 1), 'fisik')
         mental = ctrl.Antecedent(np.arange(0, 101, 1), 'mental')
         pengganggu = ctrl.Antecedent(np.arange(0, 101, 1), 'pengganggu')
@@ -127,15 +131,23 @@ def fuzzy_route():
         simulasi.compute()
 
         hasil_angka = round(simulasi.output['jam_tidur'], 1)
-        
+
         if hasil_angka >= 9.5: status = "Tidur Ekstra (Recovery)"
         elif hasil_angka >= 6.5: status = "Tidur Ideal (Sehat)"
         else: status = "Waspada Kurang Tidur"
 
         hasil_fuzzy = {"angka": hasil_angka, "status": status}
 
+        plt.clf()
+        jam_tidur.view(sim=simulasi)
+
+        img = io.BytesIO()
+        plt.savefig(img, format='png', bbox_inches='tight')
+        img.seek(0)
+        grafik_base64 = base64.b64encode(img.getvalue()).decode()
+        plt.close()
+
     return render_template('fuzzy.html', hasil=hasil_fuzzy, grafik=grafik_base64)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True, port=8080)

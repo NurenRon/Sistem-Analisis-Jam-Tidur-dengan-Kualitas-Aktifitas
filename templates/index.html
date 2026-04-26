@@ -12,12 +12,12 @@
         :root {
             --primary-blue: #1C48C8; 
             --text-dark: #111111;
-
             --bg-gradient-1: #E0F2FF; 
-            --bg-gradient-2: #34698e; 
+            --bg-gradient-2: #B3D9FF; 
         }
 
         body {
+            /* Background gradasi tetap polos */
             background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             font-family: 'Poppins', sans-serif;
             color: var(--text-dark);
@@ -26,16 +26,29 @@
             min-height: 100vh;
         }
 
+        /* 1. NOISE HANYA DI BACKGROUND (Layer paling bawah) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/p6.png'); 
+            opacity: 0.3;
+            z-index: -2; /* Di bawah pendaran biru dan kartu */
+            pointer-events: none;
+        }
+
+        /* 2. PENDARAN BIRU (Objek yang akan diblur oleh kaca) */
         .shape-glow {
             position: fixed;
-            bottom: -20%;
-            right: -10%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(28,72,200,0.4) 0%, rgba(28,72,200,0) 70%);
+            bottom: -10%;
+            right: -5%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(28,72,200,0.5) 0%, rgba(28,72,200,0) 70%);
             border-radius: 50%;
-            z-index: -1; 
-            filter: blur(60px); 
+            z-index: -1; /* Di bawah kartu tapi di atas noise */
+            filter: blur(50px); 
         }
 
         .title-main {
@@ -43,59 +56,60 @@
             font-size: 4.5rem; 
             letter-spacing: -1.5px;
             margin-top: 5rem;
-            
             background: linear-gradient(90deg, var(--primary-blue) 0%, #FFFFFF 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
-            
-            -webkit-text-stroke: 1px #334886;
-            
+            -webkit-text-stroke: 1.5px #334886;
             filter: drop-shadow(4px 6px 8px rgba(28, 72, 200, 0.3)); 
         }
         
         .subtitle {
             font-weight: 300;
-            color: #444444; 
+            color: #555; 
             font-size: 1.1rem;
             max-width: 650px;
         }
 
+        /* 3. EFEK KACA YANG DISEMPURNAKAN */
         .card-menu {
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 3rem 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             height: 100%;
             position: relative;
             z-index: 10; 
             
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            /* Kunci Glassmorphism: Blur latar belakang */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .card-menu:hover {
-            transform: translateY(-10px);
+            transform: translateY(-12px);
         }
 
         .card-blue {
-            background-color: rgba(28, 72, 200, 0.65); 
+            background-color: rgba(28, 72, 200, 0.10); /* Transparansi ditingkatkan */
             color: white;
+            /* Border putih tipis untuk efek pantulan cahaya kaca */
             border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(28, 72, 200, 0.2);
+            box-shadow: 0 15px 35px rgba(28, 72, 200, 0.2);
         }
-        .card-blue h1 { font-weight: 800; font-size: 3rem; margin-bottom: 0; opacity: 0.9; }
-        .card-blue h3 { font-weight: 700; margin-top: 10px; margin-bottom: 20px; }
-        .card-blue p { font-weight: 300; font-size: 0.9rem; opacity: 0.9; }
         
+        /* KACA PUTIH (Lebih bening) */
         .card-white {
-            background-color: rgba(255, 255, 255, 0.45); 
+            background-color: rgba(255, 255, 255, 0.3); /* Lebih bening */
             color: var(--text-dark);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
         }
-        .card-white h1 { font-weight: 800; font-size: 3rem; margin-bottom: 0; color: var(--text-dark); }
-        .card-white h3 { font-weight: 700; margin-top: 10px; margin-bottom: 20px; }
-        .card-white p { font-weight: 300; font-size: 0.9rem; color: #555; }
+
+        /* Memastikan teks di dalam kartu tetap tajam */
+        .card-menu h1, .card-menu h3, .card-menu p {
+            position: relative;
+            z-index: 2;
+        }
 
         a.card-link {
             text-decoration: none;
@@ -109,7 +123,6 @@
     <div class="shape-glow"></div>
 
     <div class="container pb-5">
-        
         <div class="row mb-5">
             <div class="col-12">
                 <h1 class="title-main">SLEEP ANALYSIS.</h1>
@@ -118,13 +131,12 @@
         </div>
 
         <div class="row g-4 mt-2">
-            
             <div class="col-md-5">
                 <a href="/pakar" class="card-link">
                     <div class="card card-menu card-blue">
-                        <h1>01</h1>
+                        <h1 class="fw-800">01</h1>
                         <h3>Sistem Pakar</h3>
-                        <p>Analisis berbasis aturan pasti (Rule-Based Forward Chaining) berdasarkan rutinitas harian dan kondisi fisik.</p>
+                        <p>Analisis berbasis aturan pasti berdasarkan rutinitas harian dan kondisi fisik.</p>
                         <div class="mt-4 text-white text-opacity-75 small fw-bold">MULAI KONSULTASI &rarr;</div>
                     </div>
                 </a>
@@ -133,14 +145,13 @@
             <div class="col-md-5">
                 <a href="/fuzzy" class="card-link">
                     <div class="card card-menu card-white">
-                        <h1>02</h1>
+                        <h1 class="fw-800">02</h1>
                         <h3>Logika Fuzzy</h3>
-                        <p>Analisis presisi berbasis AI menggunakan himpunan parameter kelelahan fisik dan stres mental (Skala 0-100).</p>
+                        <p>Analisis presisi berbasis AI menggunakan himpunan parameter kelelahan fisik dan stres mental.</p>
                         <div class="mt-4 text-primary small fw-bold">HITUNG DURASI &rarr;</div>
                     </div>
                 </a>
             </div>
-
         </div>
     </div>
 

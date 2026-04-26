@@ -25,6 +25,7 @@
             overflow-x: hidden;
         }
 
+        /* Efek Cahaya Latar */
         .shape-glow {
             position: fixed;
             bottom: -20%;
@@ -37,6 +38,7 @@
             filter: blur(60px); 
         }
 
+        /* Efek Kaca (Glassmorphism) */
         .glass-panel {
             background-color: rgba(255, 255, 255, 0.75); 
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -48,6 +50,7 @@
             z-index: 10;
         }
 
+        /* Kustomisasi Slider agar selaras tema */
         .form-range::-webkit-slider-thumb {
             background: var(--primary-blue);
         }
@@ -99,7 +102,7 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-custom-primary w-100 fw-bold fs-5 py-3">Lihat Hasilnya</button>
+                <button type="submit" class="btn btn-custom-primary w-100 fw-bold fs-5 py-3">Analisis dengan AI</button>
             </form>
 
             {% if hasil %}
