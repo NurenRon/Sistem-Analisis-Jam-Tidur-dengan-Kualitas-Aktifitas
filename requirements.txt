@@ -3,4 +3,3 @@ numpy==1.26.4
 scikit-fuzzy==0.4.2
 matplotlib==3.8.4
 networkx==3.2.1
-gunicorn==21.2.0
