@@ -1,12 +1,13 @@
-import os # Tambahkan ini
+import os
+
+os.environ['MPLCONFIGDIR'] = '/tmp'
+
 from flask import Flask, render_template, request
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 import matplotlib
-# PENTING UNTUK VERCEL: Paksa matplotlib menggunakan backend 'Agg' 
-# sebelum mengimpor pyplot agar tidak crash saat render gambar
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -19,17 +20,12 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-# ==========================================
-# ROUTE 2: Sistem Pakar (Rule-Based Forward Chaining)
-# ==========================================
 @app.route('/pakar', methods=['GET', 'POST'])
 def pakar():
     hasil_pakar = None
     if request.method == 'POST':
-        # Mengambil 15 jawaban dari form
         ans = {f"P{i}": request.form.get(f"q{i}") for i in range(1, 16)}
 
-        # DATABASE KESIMPULAN & ATURAN
         kesimpulan_data = [
             {
                 "id": 1,
@@ -96,9 +92,6 @@ def pakar():
 
     return render_template('pakar.html', hasil=hasil_pakar)
 
-# ==========================================
-# ROUTE 3: Sistem Fuzzy
-# ==========================================
 @app.route('/fuzzy', methods=['GET', 'POST'])
 def fuzzy_route():
     hasil_fuzzy = None
@@ -151,23 +144,18 @@ def fuzzy_route():
 
         hasil_fuzzy = {"angka": hasil_angka, "status": status}
 
-        # GENERATE GRAFIK (Lebih aman untuk Vercel)
-        plt.switch_backend('Agg') # Pastikan lagi pakai Agg
-        fig, ax = plt.subplots(figsize=(6, 4)) # Buat figure secara eksplisit
-        jam_tidur.view(sim=simulasi, ax=ax) # Masukkan grafik ke axis yang dibuat
+        plt.switch_backend('Agg')
+        fig, ax = plt.subplots(figsize=(6, 4))
+        jam_tidur.view(sim=simulasi, ax=ax)
         
         img = io.BytesIO()
         fig.savefig(img, format='png', bbox_inches='tight')
         img.seek(0)
         grafik_base64 = base64.b64encode(img.getvalue()).decode()
-        plt.close(fig) # Tutup figure secara spesifik
+        plt.close(fig)
 
     return render_template('fuzzy.html', hasil=hasil_fuzzy, grafik=grafik_base64)
 
-# PENYESUAIAN PENTING UNTUK VERCEL (Menghapus app.run port 8080)
-# Vercel tidak butuh app.run(). Kita serahkan handlingnya ke WSGI/Vercel.
-# Jika nama file ini dijalankan langsung di laptop, baru jalankan app.run()
 if __name__ == '__main__':
-    # Pakai port yang diberikan oleh environment, atau 8080 jika tidak ada
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port, debug=False)
