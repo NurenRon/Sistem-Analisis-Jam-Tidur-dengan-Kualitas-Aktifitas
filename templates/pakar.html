@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar - Jam Tidur</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1C48C8; 
+            --text-dark: #111111;
+            --bg-gradient-1: #E0F2FF; 
+            --bg-gradient-2: #34698e; 
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .shape-glow {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(28,72,200,0.4) 0%, rgba(28,72,200,0) 70%);
+            border-radius: 50%;
+            z-index: -1; 
+            filter: blur(60px); 
+        }
+
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.75); 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-custom-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom-primary:hover {
+            background-color: #153696;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center">
+
+    <div class="shape-glow"></div>
+
+    <div class="container my-5" style="max-width: 650px;">
+        <div class="glass-panel p-5 text-center">
+            <h3 class="text-primary fw-bold mb-1" style="color: var(--primary-blue) !important;">Konsultasi Pakar</h3>
+            <p class="text-muted small mb-4">Analisis Pola Tidur Mahasiswa</p>
+
+            {% if not hasil %}
+            
+                <div id="panel-pertanyaan">
+                    <div class="progress mb-4" style="height: 8px; border-radius: 10px;">
+                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%; background-color: var(--primary-blue);"></div>
+                    </div>
+                    
+                    <span class="badge bg-secondary mb-3 rounded-pill px-3 py-2 bg-opacity-75">Pertanyaan <span id="nomor-pertanyaan">1</span> / 15</span>
+                    <h4 id="teks-pertanyaan" class="mb-5 lh-base fw-bold text-dark">Apakah kamu memiliki jadwal kuliah atau kegiatan wajib di pagi hari (sebelum jam 08.00)?</h4>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-custom-primary px-5 py-3 fw-bold" onclick="jawab('y')">YA</button>
+                        <button class="btn btn-outline-danger px-5 py-3 fw-bold" style="border-radius: 12px; border-width: 2px;" onclick="jawab('t')">TIDAK</button>
+                    </div>
+                </div>
+
+                <form id="form-pakar" method="POST" style="display: none;">
+                    {% for i in range(1, 16) %}
+                    <input type="hidden" name="q{{ i }}" id="input-q{{ i }}">
+                    {% endfor %}
+                </form>
+
+            {% else %}
+            
+                <div class="alert mt-2 text-start border-0 shadow-sm" style="background-color: rgba(255,255,255,0.9); border-radius: 15px;">
+                    <p class="text-center text-muted mb-1 small fw-bold">HASIL ANALISIS</p>
+                    <h4 class="text-center fw-bold text-dark mb-4">{{ hasil.nama }}</h4>
+                    
+                    <div class="card mb-3 border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card-header text-white fw-bold text-center" style="background-color: var(--primary-blue); border: none;">Rekomendasi Tidur</div>
+                        <div class="card-body bg-white">
+                            <h3 class="fw-bold text-center my-2" style="color: var(--primary-blue);">{{ hasil.durasi }}</h3>
+                        </div>
+                    </div>
+
+                    <p class="mb-2 lh-lg text-secondary"><strong>Keterangan:</strong> <br>{{ hasil.keterangan }}</p>
+                </div>
+                
+                <a href="/pakar" class="btn btn-custom-primary w-100 mt-3 py-3 fw-bold">Ulangi Konsultasi</a>
+            
+            {% endif %}
+
+            <a href="/" class="btn btn-outline-secondary w-100 mt-3 py-2 fw-bold" style="border-radius: 12px; border-width: 2px;">Kembali ke Menu</a>
+        </div>
+    </div>
+
+    <script>
+        const daftarPertanyaan = [
+            "Apakah kamu memiliki jadwal kuliah atau kegiatan wajib di pagi hari (sebelum jam 08.00)?",
+            "Apakah kamu sering begadang untuk mengerjakan tugas atau belajar hingga lewat jam 00.00?",
+            "Apakah kamu aktif mengikuti organisasi atau kegiatan kampus di malam hari (setelah jam 19.00)?",
+            "Apakah kamu sering merasa mengantuk atau lelah saat menjalani aktivitas di siang hari?",
+            "Apakah kamu membutuhkan alarm lebih dari 2 kali untuk bisa bangun pagi?",
+            "Apakah kamu sering merasa tubuhmu segar dan siap beraktivitas setelah bangun tidur?",
+            "Apakah kamu biasa menggunakan HP/laptop lebih dari 1 jam sebelum tidur?",
+            "Apakah kamu mengonsumsi kafein (kopi, teh, energy drink) setelah jam 18.00?",
+            "Apakah kamu memiliki rutinitas yang membantu relaksasi sebelum tidur (mandi, membaca, dsb)?",
+            "Apakah total jam tidurmu dalam sehari kurang dari 6 jam?",
+            "Apakah kamu sering terbangun di tengah malam dan sulit tidur kembali?",
+            "Apakah kamu merasa tidur siangmu lebih nyenyak dibanding tidur malam?",
+            "Apakah kamu rutin berolahraga minimal 3x seminggu?",
+            "Apakah kamu memiliki tekanan akademik tinggi yang menyebabkan stres hampir setiap hari?",
+            "Apakah jam tidur dan bangunmu berubah-ubah setiap harinya (tidak konsisten)?"
+        ];
+
+        let indexSaatIni = 0;
+
+        function jawab(respon) {
+            document.getElementById('input-q' + (indexSaatIni + 1)).value = respon;
+            indexSaatIni++;
+
+            if (indexSaatIni < daftarPertanyaan.length) {
+                document.getElementById('teks-pertanyaan').innerText = daftarPertanyaan[indexSaatIni];
+                document.getElementById('nomor-pertanyaan').innerText = indexSaatIni + 1;
+                let persentase = (indexSaatIni / daftarPertanyaan.length) * 100;
+                document.getElementById('progress-bar').style.width = persentase + '%';
+            } else {
+                document.getElementById('form-pakar').submit();
+            }
+        }
+    </script>
+</body>
+</html>

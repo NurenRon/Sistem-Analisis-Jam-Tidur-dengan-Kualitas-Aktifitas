@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Fuzzy - Jam Tidur</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1C48C8; 
+            --text-dark: #111111;
+            --bg-gradient-1: #E0F2FF; 
+            --bg-gradient-2: #34698e; 
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .shape-glow {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(28,72,200,0.4) 0%, rgba(28,72,200,0) 70%);
+            border-radius: 50%;
+            z-index: -1; 
+            filter: blur(60px); 
+        }
+
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.75); 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--primary-blue);
+        }
+
+        .btn-custom-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom-primary:hover {
+            background-color: #153696;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center py-5">
+
+    <div class="shape-glow"></div>
+
+    <div class="container" style="max-width: 700px;">
+        <div class="glass-panel p-5">
+            <h3 class="text-center fw-bold mb-4" style="color: var(--primary-blue);">Logika Fuzzy (Intensitas Harian)</h3>
+            
+            <form method="POST">
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">Kelelahan Fisik (0 = Rebahan, 100 = Sangat Lelah):</label>
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="range" name="fisik" class="form-range flex-grow-1" min="0" max="100" value="50" oninput="this.nextElementSibling.innerText = this.value">
+                        <span class="badge bg-primary fs-6 rounded-pill px-3 py-2" style="background-color: var(--primary-blue) !important;">50</span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">Stres / Beban Mental (0 = Santai, 100 = Sangat Stres):</label>
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="range" name="mental" class="form-range flex-grow-1" min="0" max="100" value="50" oninput="this.nextElementSibling.innerText = this.value">
+                        <span class="badge bg-primary fs-6 rounded-pill px-3 py-2" style="background-color: var(--primary-blue) !important;">50</span>
+                    </div>
+                </div>
+                
+                <div class="mb-5">
+                    <label class="form-label fw-bold text-dark">Pengganggu Tidur (Kafein / Screen Time) (0 = Bersih, 100 = Banyak):</label>
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="range" name="pengganggu" class="form-range flex-grow-1" min="0" max="100" value="50" oninput="this.nextElementSibling.innerText = this.value">
+                        <span class="badge bg-primary fs-6 rounded-pill px-3 py-2" style="background-color: var(--primary-blue) !important;">50</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-custom-primary w-100 fw-bold fs-5 py-3">Lihat Hasilnya</button>
+            </form>
+
+            {% if hasil %}
+            <div class="alert mt-5 text-center border-0 shadow-sm" style="background-color: rgba(255,255,255,0.9); border-radius: 15px;">
+                <p class="mb-1 text-muted fw-bold small">REKOMENDASI AI FUZZY</p>
+                <h2 class="fw-bold my-3" style="color: var(--primary-blue);">{{ hasil.angka }} Jam</h2>
+                <span class="badge px-4 py-2 fs-6 rounded-pill" style="background-color: var(--primary-blue);">{{ hasil.status }}</span>
+                
+                <hr class="my-4" style="border-color: #ccc;">
+                
+                <p class="fw-bold mb-3 text-dark small">Visualisasi Grafik Himpunan Fuzzy (Defuzzifikasi):</p>
+                <div class="p-2 bg-white rounded-3 shadow-sm border">
+                    <img src="data:image/png;base64,{{ grafik }}" alt="Grafik Fuzzy" class="img-fluid rounded">
+                </div>
+            </div>
+            {% endif %}
+            
+            <a href="/" class="btn btn-outline-secondary w-100 mt-4 py-3 fw-bold" style="border-radius: 12px; border-width: 2px;">Kembali ke Menu Utama</a>
+        </div>
+    </div>
+</body>
+</html>

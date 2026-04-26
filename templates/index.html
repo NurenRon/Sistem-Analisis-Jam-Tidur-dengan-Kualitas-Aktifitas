@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penentuan Jam Tidur Sehat</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1C48C8; 
+            --text-dark: #111111;
+
+            --bg-gradient-1: #E0F2FF; 
+            --bg-gradient-2: #34698e; 
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden; 
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .shape-glow {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(28,72,200,0.4) 0%, rgba(28,72,200,0) 70%);
+            border-radius: 50%;
+            z-index: -1; 
+            filter: blur(60px); 
+        }
+
+        .title-main {
+            font-weight: 800;
+            font-size: 4.5rem; 
+            letter-spacing: -1.5px;
+            margin-top: 5rem;
+            
+            background: linear-gradient(90deg, var(--primary-blue) 0%, #FFFFFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            
+            -webkit-text-stroke: 1px #334886;
+            
+            filter: drop-shadow(4px 6px 8px rgba(28, 72, 200, 0.3)); 
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            color: #444444; 
+            font-size: 1.1rem;
+            max-width: 650px;
+        }
+
+        .card-menu {
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            position: relative;
+            z-index: 10; 
+            
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .card-menu:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-blue {
+            background-color: rgba(28, 72, 200, 0.65); 
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(28, 72, 200, 0.2);
+        }
+        .card-blue h1 { font-weight: 800; font-size: 3rem; margin-bottom: 0; opacity: 0.9; }
+        .card-blue h3 { font-weight: 700; margin-top: 10px; margin-bottom: 20px; }
+        .card-blue p { font-weight: 300; font-size: 0.9rem; opacity: 0.9; }
+        
+        .card-white {
+            background-color: rgba(255, 255, 255, 0.45); 
+            color: var(--text-dark);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .card-white h1 { font-weight: 800; font-size: 3rem; margin-bottom: 0; color: var(--text-dark); }
+        .card-white h3 { font-weight: 700; margin-top: 10px; margin-bottom: 20px; }
+        .card-white p { font-weight: 300; font-size: 0.9rem; color: #555; }
+
+        a.card-link {
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shape-glow"></div>
+
+    <div class="container pb-5">
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <h1 class="title-main">SLEEP ANALYSIS.</h1>
+                <p class="subtitle mt-2">Pilih metode analisis yang ingin Anda gunakan untuk mengetahui kualitas dan durasi tidur terbaik Anda.</p>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            
+            <div class="col-md-5">
+                <a href="/pakar" class="card-link">
+                    <div class="card card-menu card-blue">
+                        <h1>01</h1>
+                        <h3>Sistem Pakar</h3>
+                        <p>Analisis berbasis aturan pasti (Rule-Based Forward Chaining) berdasarkan rutinitas harian dan kondisi fisik.</p>
+                        <div class="mt-4 text-white text-opacity-75 small fw-bold">MULAI KONSULTASI &rarr;</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-5">
+                <a href="/fuzzy" class="card-link">
+                    <div class="card card-menu card-white">
+                        <h1>02</h1>
+                        <h3>Logika Fuzzy</h3>
+                        <p>Analisis presisi berbasis AI menggunakan himpunan parameter kelelahan fisik dan stres mental (Skala 0-100).</p>
+                        <div class="mt-4 text-primary small fw-bold">HITUNG DURASI &rarr;</div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
